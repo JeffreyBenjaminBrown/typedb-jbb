@@ -1,0 +1,20 @@
+* PITFALL | TODO
+I included `python310Packages.wheel` in `pip-shell.nix`,
+and yet for some reason I have to install it in the code
+* launch script
+nix-shell pip-shell.nix
+
+# The rest of this is just like it would be without `nix-shell`.
+
+# Build the environment. Only needed once.
+python -m venv .venv
+
+source .venv/bin/activate
+PS1="[nix @ \W ] "          # Shorten the prompt
+pip3 install wheel
+pip3 install --upgrade pip
+pip3 install --upgrade -r requirements.txt
+* when done
+  alternatives
+** run `deactivate`
+** just press Ctrl-D
