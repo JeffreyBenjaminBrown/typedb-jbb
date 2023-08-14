@@ -1,0 +1,34 @@
+# Make a schema
+transaction mydb schema write
+
+  define
+    person sub entity,
+      owns name,
+      plays buys-from:buyer,
+      plays buys-from:seller;
+    name sub attribute, value string;
+    buys-from sub relation,
+      relates buyer,
+      relates seller;
+
+commit
+
+transaction mydb data write
+
+  insert $p isa person, has name "alice";
+  insert $p isa person, has name "bob";
+
+  match
+    $p isa person, has name $n;
+
+  match
+    $a isa person, has name "alice";
+    $b isa person, has name "bob";
+  insert $r (buyer: $a,
+             seller: $b) isa buys-from;
+
+  match
+    $b isa person, has name $bn;
+    $s isa person, has name $sn;
+    $r (buyer: $b, seller: $s) isa buys-from;
+  get $bn, $sn;

@@ -1,6 +1,6 @@
 * PITFALL | TODO
-I included `python310Packages.wheel` in `pip-shell.nix`,
-and yet for some reason I have to install it in the code
+  I included `python310Packages.wheel` in `pip-shell.nix`,
+  and yet for some reason I have to install it in the code.
 * launch script
 nix-shell pip-shell.nix
 
