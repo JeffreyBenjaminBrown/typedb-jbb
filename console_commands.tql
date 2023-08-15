@@ -1,3 +1,4 @@
+###############
 # Make a schema
 transaction mydb schema write
 
@@ -13,6 +14,10 @@ transaction mydb schema write
 
 commit
 
+
+#######################################################
+# Add some data# -- namely, that alice buys from bob --
+# and then query it.
 transaction mydb data write
 
   insert $p isa person, has name "alice";
@@ -32,3 +37,82 @@ transaction mydb data write
     $s isa person, has name $sn;
     $r (buyer: $b, seller: $s) isa buys-from;
   get $bn, $sn;
+
+
+##########################################
+# Proof: If dude inherits from person,
+# dude inherits the ability to be a buyer.
+transaction mydb schema write
+
+  define
+    dude sub person;
+
+commit
+
+transaction mydb data write
+
+  # NOTE: Not idempotent! Run this twice,
+  # and there are two like-named dudes.
+  insert $p isa dude, has name "dude";
+
+  # NOTE: Even if the next match-insert is evaluated in the same breath
+  # as the previous insert, $p will have already gone out of scope.
+  match
+    $b isa person, has name "bob";
+    $d isa person, has name "dude";
+  insert $r (buyer: $d,
+             seller: $b) isa buys-from;
+
+  match $r (buyer: $b,
+            seller: $s) isa buys-from;
+	$b isa person, has name $bn;
+	$s isa person, has name $sn;
+
+commit
+
+
+##########################################
+# NOTE: Even if dude is in a relationship,
+# dude can be deleted.
+transaction mydb data write
+
+  match $r (buyer: $b,
+            seller: $s) isa buys-from;
+	$b isa dude;
+
+  match $p isa dude, has name "dude";
+  delete $p isa dude;
+
+  # NOTE: The relationship now has a hole.
+  match $r isa buys-from;
+
+close
+
+
+##########################################
+# NOTE: An entity can have multiple values
+# of the same attribute!
+  define
+    dude owns radness;
+    radness sub attribute, value double;
+
+commit
+
+transaction mydb data write
+
+  # There should be only one.
+  match $d isa dude;
+
+  match $d isa dude;
+  insert $d has radness 3;
+
+  match $d isa dude;
+  insert $d has radness 4;
+
+  # There are two solutions to this query, yet only one dude!
+  match $d isa dude, has radness $r;
+
+  # And there are *no* solutions to this query.
+  match $d isa dude,
+    has radness 3,
+    has radness 4;

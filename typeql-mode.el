@@ -7,7 +7,7 @@
 	    ( ;; comments
 	     "#.*" . font-lock-comment-face)
 	    ( ;; session-level commands
-	     "transaction\\|schema\\|data\\|read\\|write\\|commit"
+	     "transaction\\|schema\\|data\\|read\\|write\\|commit\\|close"
 
 	     ;; TODO: I'd like to use the functions "concat" and "append",
 	     ;; as demosntrated here:
@@ -23,10 +23,10 @@
 	     ;;   (concat "define\\|" "undefine")
 	     . font-lock-builtin-face)
 	    ( ;; query-level commands
-	     "attribute\\|enitty\\|relation\\|abstract\\|sort\\|offset\\|limit\\|group\\|count\\|sum\\|max\\|min\\|mean\\|median\\|std\\|define\\|undefine\\|sub\\|owns\\|plays\\|value\\|relates\\|match\\|insert\\|isa\\|get\\|delete\\|when\\|then"
+	     "abstract\\|sort\\|offset\\|limit\\|group\\|count\\|sum\\|max\\|min\\|mean\\|median\\|std\\|define\\|undefine\\|sub\\|has\\|owns\\|plays\\|value\\|relates\\|match\\|insert\\|isa\\|get\\|delete\\|when\\|then"
 	     . font-lock-function-name-face)
-	    ( ;; builtin types
-	     "long\\|double\\|boolean\\|string\\|datetime"
+	    ( ;; builtin types (both graph-level and whatever is under it)
+	     "attribute\\|enitty\\|relation\\|long\\|double\\|boolean\\|string\\|datetime"
 	    . font-lock-type-face)
        )))
   (setq mode-name "typeql"))
